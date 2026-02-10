@@ -210,7 +210,7 @@ GBIF_SQL_lookup <- function(input_temp){
   #print(paste(source_collect))
   colnames(source_collect) <- paste("source", colnames(source_collect), sep = "_")
   colnames(target_collect) <- paste("target", colnames(target_collect), sep = "_")
-  out <- cbind(source_collect,target_collect)
+  out <- cbind(input,source_collect,target_collect)
   #print(out)
   if(is.na(out$source_GBIF_phylum)==F & is.na(out$target_GBIF_phylum)==F){
   if(out$source_GBIF_phylum=="Tracheophyta" | out$target_GBIF_phylum=="Tracheophyta"){
