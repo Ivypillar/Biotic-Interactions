@@ -16,6 +16,6 @@ Specific script for harmonising the GloBI taxonomy to the GBIF backbone (rather 
 
 R script seemed fairly slow at the large scales required so there is a faster Python approach.
 
-You can run with GNIF taxon file, input file and the name (header) of the column you want the GBIF matching to run on. Like so:
+You can run with GBIF taxon file, input file and the name (header) of the column you want the GBIF matching to run on. Like so:
 
 python GBIF_flexiMatch_prefixer.py ../External_Data/GBIF/Taxon.tsv ./AVONET1_BirdLife.csv.gz Species1 > GBIF_avonet.csv
