@@ -14,7 +14,8 @@ Specific script for harmonising the GloBI taxonomy to the GBIF backbone (rather 
 
 # Python approach
 
-R script seemed fairly slow at the large scales required so there is a faster Python approach.
+R script seemed fairly slow at the large scales required so there is a faster Python approach. I've included a yaml file of the conda environment, to pre-empt dependency issues:
+conda env create -f GBIF_harmonise.yml
 
 You can run with GBIF taxon file, input file and the name (header) of the column you want the GBIF matching to run on. Like so:
 
