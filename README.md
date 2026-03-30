@@ -20,4 +20,5 @@ conda env create -f GBIF_harmonise.yml
 You can run with GBIF taxon file, input file and the name (header) of the column you want the GBIF matching to run on, aswell as a secondary backup name column (if this exists) and also supporting phylogeny information to resolve multiple name matches. Like so:
 
 python GBIF_flexiMatch_prefixer.py [GBIF_taxon_file] [Input_file] [Input_taxon_column] [Backup_input_taxon_column] [comma-separated phylogeny columns]  > [output.csv]
+
 python GBIF_flexiMatch_prefixer.py ../External_Data/GBIF/Taxon.tsv ./AVONET1_BirdLife.csv.gz Species1 Species1  > GBIF_avonet.csv
