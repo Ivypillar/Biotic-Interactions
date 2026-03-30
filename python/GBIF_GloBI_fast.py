@@ -198,7 +198,6 @@ else:
 
 
 GloBI = "./interactions_plantae.csv.gz"
-#GloBI = "/Users/Sam/Desktop/PostDoc_Ecology/GBIF_interactions_test.csv"
 with openfile(GloBI, mode='rt') as G:
 #with open(GloBI) as G:
     header_G = G.readline()
