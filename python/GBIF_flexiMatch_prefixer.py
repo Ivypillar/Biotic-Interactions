@@ -6,7 +6,20 @@ import re
 import Levenshtein
 import sys
 
-def process_taxon(sourceTaxonName):
+
+def match_len(hitlist,phylo_info):
+#    print(hitlist)
+#    print(phylo_info)
+    N=list()
+    #print(set(a).intersection(set(b)))
+    for i in hitlist:
+        length = len(set(i).intersection(set(phylo_info)))
+        N.append(length)
+    best_match =hitlist[N.index(max(N))]
+#    print(best_match)
+    return(best_match)
+
+def process_taxon(sourceTaxonName,phylo):
     sourceTaxonName = sourceTaxonName.translate(str.maketrans({' ': ' ', '.': ' '}))
     sourceTaxonName_array = sourceTaxonName.split()
     if (len(sourceTaxonName_array) == 1):
@@ -14,11 +27,22 @@ def process_taxon(sourceTaxonName):
     else:
         sName = sourceTaxonName_array[0] + ' ' + sourceTaxonName_array[1]
 
-    if (sName in taxa_dict):
-        # print('found in taxa_dict',taxa_dict[sName])
+
+
+    if(sName in accepted_dict):
+        hit_list = accepted_dict[sName]
+        #bestMatch = match_len(hit_list,phylo)
+
         taxonID, datasetID, parentNameUsageID, acceptedNameUsageID, originalNameUsageID, scientificName, scientificNameAuthorship, canonicalName, genericName, specificEpithet, infraspecificEpithet, taxonRank, nameAccordingTo, namePublishedIn, taxonomicStatus, nomenclaturalStatus, taxonRemarks, kingdom, phylum, class_clade, order, family, genus = \
-        taxa_dict[sName]
-        if (acceptedNameUsageID != ''):
+        match_len(hit_list,phylo)
+
+    elif(sName in taxa_dict):
+        hit_list = taxa_dict[sName]
+        #bestMatch = match_len(hit_list,phylo)
+        #print('found in taxa_dict',taxa_dict[sName])
+        taxonID, datasetID, parentNameUsageID, acceptedNameUsageID, originalNameUsageID, scientificName, scientificNameAuthorship, canonicalName, genericName, specificEpithet, infraspecificEpithet, taxonRank, nameAccordingTo, namePublishedIn, taxonomicStatus, nomenclaturalStatus, taxonRemarks, kingdom, phylum, class_clade, order, family, genus = \
+        match_len(hit_list,phylo)
+        if (acceptedNameUsageID == ''):
             # print("synonym substitution performed before ",scientificName,":",canonicalName)
             if (acceptedNameUsageID in accepted_dict):
                 taxonID, datasetID, parentNameUsageID, acceptedNameUsageID, originalNameUsageID, scientificName, scientificNameAuthorship, canonicalName, genericName, specificEpithet, infraspecificEpithet, taxonRank, nameAccordingTo, namePublishedIn, taxonomicStatus, nomenclaturalStatus, taxonRemarks, kingdom, phylum, class_clade, order, family, genus = \
@@ -29,9 +53,11 @@ def process_taxon(sourceTaxonName):
             # print(sName,acceptedNameUsageID)
 
     elif (sourceTaxonName_array[0] in taxa_dict):
+        hit_list = taxa_dict[sourceTaxonName_array[0]]
+        #bestMatch = match_len(hit_list,phylo)
         # print('found genus in taxa_dict', taxa_dict[sourceTaxonName_array[0]])
         taxonID, datasetID, parentNameUsageID, acceptedNameUsageID, originalNameUsageID, scientificName, scientificNameAuthorship, canonicalName, genericName, specificEpithet, infraspecificEpithet, taxonRank, nameAccordingTo, namePublishedIn, taxonomicStatus, nomenclaturalStatus, taxonRemarks, kingdom, phylum, class_clade, order, family, genus = \
-            taxa_dict[sourceTaxonName_array[0]]
+            match_len(hit_list,phylo)
         if (acceptedNameUsageID != '' and acceptedNameUsageID in accepted_dict):
             # print("synonym genus substitution performed before ", scientificName, canonicalName)
             taxonID, datasetID, parentNameUsageID, acceptedNameUsageID, originalNameUsageID, scientificName, scientificNameAuthorship, canonicalName, genericName, specificEpithet, infraspecificEpithet, taxonRank, nameAccordingTo, namePublishedIn, taxonomicStatus, nomenclaturalStatus, taxonRemarks, kingdom, phylum, class_clade, order, family, genus = \
@@ -46,12 +72,13 @@ def process_taxon(sourceTaxonName):
         dist = Levenshtein.distance(matches[0][0], sName)
         # Protoeces hawaiiensis [('Proctoeces hawaiiensis', 97.67441860465115, 1051507)] 21
         if (dist < 2):
+            hit_list = taxa_dict[matches[0][0]]
             #print(matches)
             #print(dist, 'close', sName, matches[0][0])
             taxonID, datasetID, parentNameUsageID, acceptedNameUsageID, originalNameUsageID, scientificName, scientificNameAuthorship, canonicalName,\
             genericName, specificEpithet, infraspecificEpithet, taxonRank,\
             nameAccordingTo, namePublishedIn, taxonomicStatus, nomenclaturalStatus,\
-            taxonRemarks, kingdom, phylum, class_clade, order, family, genus = taxa_dict[matches[0][0]]
+            taxonRemarks, kingdom, phylum, class_clade, order, family, genus = match_len(hit_list,phylo)
 
         else:
             #print('not', sName)
@@ -142,6 +169,10 @@ with open(GBIF) as f:
 # sourceNamespace,sourceArchiveURI,sourceDOI,sourceLastSeenAtUnixEpoch
 
 column_name = sys.argv[3]
+backup_column_name = sys.argv[4]
+
+phylo_columns = sys.argv[5]
+
 
 #GloBI = "/Users/Sam/Desktop/PostDoc_Ecology/interactions_plantae.csv.gz"
 GloBI = sys.argv[2]
@@ -154,7 +185,7 @@ with gzip.open(GloBI, mode='rt') as G:
     globi_header2_sep = globi_header2.split(",")
     #print(globi_header2_sep)
 
-    source_header = ["\"GBIF_source_taxonID\"", "\"GBIF_source_genericName\"", "\"GBIF_source_specificEpithet\"", "\"GBIF_source_kingdom\"", "\"GBIF_source_phylum\"", "\"GBIF_source_class\"", "\"GBIF_source_order\"", "\"GBIF_source_family\""]
+    source_header = ["\"GBIF_taxonID\"", "\"GBIF_genericName\"", "\"GBIF_specificEpithet\"", "\"GBIF_kingdom\"", "\"GBIF_phylum\"", "\"GBIF_class\"", "\"GBIF_order\"", "\"GBIF_family\""]
 
     header_list = source_header + globi_header2_sep
     print(','.join(header_list))
@@ -163,8 +194,16 @@ with gzip.open(GloBI, mode='rt') as G:
         res = dict(zip(globi_header2_sep, l))
         #work_ID,work_species,work_author,trait_value_361,trait_value_362,trait_value_363,agreement_361,agreement_362,agreement_363,n_361,n_362,n_363,references_361,references_362,references_363 = l
 
+        phylo_info = phylo_columns.split(",")
+
         #sourceTaxonName_array = sourceTaxonName.split(" ")
-        gbif_source = process_taxon(res[column_name])
+        if(res[column_name]==""):
+            gbif_source = process_taxon(res[backup_column_name],phylo_info)
+        else:
+            gbif_source = process_taxon(res[column_name],phylo_info)
+
+
+
         output_list = gbif_source + l
 
         print(', '.join(f'"{w}"' for w in output_list))
