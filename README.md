@@ -22,3 +22,7 @@ You can run with GBIF taxon file, input file and the name (header) of the column
 python GBIF_flexiMatch_prefixer.py [GBIF_taxon_file] [Input_file] [Input_taxon_column] [Backup_input_taxon_column] [comma-separated phylogeny columns]  > [output.csv]
 
 python GBIF_flexiMatch_prefixer.py ../External_Data/GBIF/Taxon.tsv ./AVONET1_BirdLife.csv.gz Species1 Species1 Order1,Family1 > GBIF_avonet.csv
+
+python GBIF_flexiMatch_prefixer_author.py ../External_Data/GBIF/Taxon2.tsv ./Pollination_Dispersal_data.csv.gz work_species work_species work_species,work_species work_author > GBIF_GIFT_Pollination_Dispersal_data.csv
+
+
