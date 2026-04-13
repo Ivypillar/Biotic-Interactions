@@ -25,4 +25,7 @@ python GBIF_flexiMatch_prefixer.py ../External_Data/GBIF/Taxon.tsv ./AVONET1_Bir
 
 python GBIF_flexiMatch_prefixer_author.py ../External_Data/GBIF/Taxon2.tsv ./Pollination_Dispersal_data.csv.gz work_species work_species work_species,work_species work_author > GBIF_GIFT_Pollination_Dispersal_data.csv
 
+# Unix helpers
 
+Subract a taxon string from a combined taxon and author string to create an author string.
+awk -F ',' 'NF{t=$10;gsub($9" ","",t);print$0","t}' glonaf_taxon_wcvp.csv
