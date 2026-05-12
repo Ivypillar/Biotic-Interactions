@@ -29,5 +29,5 @@ python GBIF_flexiMatch_prefixer_author.py ../External_Data/GBIF/Taxon2.tsv ./Pol
 
 Subtract a taxon string from a combined taxon and author string to create an author string.
 
-awk -v FPAT='\(\[^,\]*\)|\("\[^"\]*"\)' 'NF{t=$10;gsub($9" ","",t);print$0","t}' glonaf_taxon_wcvp.csv > glonaf_taxon_wcvp_author.csv'
+awk -v FPAT='\(\[^,\]\*\)|\("\[^"\]\*"\)' 'NF{t=$10;gsub($9" ","",t);print$0","t}' glonaf_taxon_wcvp.csv > glonaf_taxon_wcvp_author.csv'
 
