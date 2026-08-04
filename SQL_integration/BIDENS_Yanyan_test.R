@@ -320,11 +320,19 @@ datalist[[ID]] <- intersected_pts
 }
 
 big_data = do.call(rbind, datalist)
+saveRDS(big_data,"big_data.rds")
+
+big_data <- readRDS("big_data.rds")
 
 library(tidyverse)
 
-big_data %>% 
-  filter(!str_detect(rownames(mtcars), ".1"))
+big_data %>% group_by(across(all_of(big_data[,-c(129:140)]))) %>% summarise(sum_mpg = sum(mpg), .groups = 'drop')
+
+big_data_sansSF <- big_data[,-140]
+
+big_data_sansSF %>% group_by(across(all_of(colnames(big_data[,-c(129:140)]))))
+
+big_data_sansSF_collapse <- big_data_sansSF %>% group_by(across(all_of(colnames(big_data[,-c(129:140)])))) %>% summarise(status = last(status))
 
 
 #eventDate
